@@ -27,8 +27,11 @@ async function openCamera() {
         
         // 4. Actualización de la UI
         cameraContainer.style.display = 'block';
+        video.style.display = 'block';
+        canvas.style.display = 'none';
         openCameraBtn.textContent = 'Cámara Abierta';
         openCameraBtn.disabled = true;
+        takePhotoBtn.style.display = 'block';
         
         console.log('Cámara abierta exitosamente');
     } catch (error) {
@@ -44,17 +47,28 @@ function takePhoto() {
     }
 
     // 1. Dibujar el Frame de Video en el Canvas
-    // El método drawImage() es clave: toma el <video> como fuente.
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
     // 2. Conversión a Data URL
     const imageDataURL = canvas.toDataURL('image/png');
     
-    // 3. (Opcional) Visualización y Depuración
-    console.log('Foto capturada en base64:', imageDataURL.length, 'caracteres');
+    // 3. Mostrar la foto capturada
+    video.style.display = 'none';
+    canvas.style.display = 'block';
+    takePhotoBtn.style.display = 'none';
     
-    // 4. Cierre de la Cámara (Para liberar recursos)
-    closeCamera();
+    // 4. Detener el stream para liberar recursos
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+        video.srcObject = null;
+    }
+    
+    // 5. Habilitar el botón para abrir cámara nuevamente
+    openCameraBtn.textContent = 'Tomar Otra Foto';
+    openCameraBtn.disabled = false;
+    
+    console.log('Foto capturada en base64:', imageDataURL.length, 'caracteres');
 }
 
 function closeCamera() {
