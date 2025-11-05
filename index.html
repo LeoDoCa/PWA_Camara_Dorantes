@@ -45,10 +45,14 @@
             margin: 20px 0;
         }
         
-        #video {
+        #video, #photoPreview {
             width: 100%;
             border-radius: 10px;
             background: #000;
+        }
+        
+        #photoPreview {
+            display: none;
         }
         
         #canvas {
@@ -87,6 +91,19 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
         }
+
+        .btn-warning-custom {
+            background: #ffc107;
+            border: none;
+            color: #000;
+            margin-top: 10px;
+        }
+        
+        .btn-warning-custom:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        }
         
         .btn-custom:disabled {
             opacity: 0.6;
@@ -111,9 +128,12 @@
         
         <div id="cameraContainer">
             <video id="video" autoplay playsinline></video>
+            <img id="photoPreview" alt="Foto capturada">
             <button id="takePhoto" class="btn btn-custom btn-success-custom">
-                <span class="icon">✓</span>
                 Tomar Foto
+            </button>
+            <button id="retakePhoto" class="btn btn-custom btn-warning-custom" style="display: none;">
+                Tomar Otra Foto
             </button>
         </div>
         
