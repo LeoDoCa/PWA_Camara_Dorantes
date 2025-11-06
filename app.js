@@ -4,16 +4,29 @@ const cameraContainer = document.getElementById('cameraContainer');
 const video = document.getElementById('video');
 const takePhotoBtn = document.getElementById('takePhoto');
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d'); // Contexto 2D para dibujar en el Canvas
+const ctx = canvas.getContext('2d');
+const switchCameraBtn = document.getElementById('switchCamera');
+const gallery = document.getElementById('gallery');
 
-let stream = null; // Variable para almacenar el MediaStream de la cámara
+let stream = null;
+let currentFacingMode = 'environment'; // Inicialmente usar cámara trasera
+
+async function checkCameraCapabilities() {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    return videoDevices.length > 1;
+}
 
 async function openCamera() {
     try {
+        // Verificar si hay múltiples cámaras
+        const hasMultipleCameras = await checkCameraCapabilities();
+        switchCameraBtn.style.display = hasMultipleCameras ? 'block' : 'none';
+
         // 1. Definición de Restricciones (Constraints)
         const constraints = {
             video: {
-                facingMode: { ideal: 'environment' }, // Solicita la cámara trasera
+                facingMode: { ideal: currentFacingMode },
                 width: { ideal: 1280 },
                 height: { ideal: 720 }
             }
@@ -62,7 +75,16 @@ function takePhoto() {
     videoContainer.style.display = 'none';
     photoContainer.style.display = 'block';
     
-    // 4. Mostrar botón de volver a tomar
+    // 4. Añadir a la galería
+    const galleryItem = document.createElement('div');
+    galleryItem.className = 'gallery-item';
+    const img = document.createElement('img');
+    img.src = imageDataURL;
+    img.alt = 'Foto capturada';
+    galleryItem.appendChild(img);
+    gallery.insertBefore(galleryItem, gallery.firstChild);
+    
+    // 5. Mostrar botón de volver a tomar
     document.getElementById('retakePhoto').style.display = 'inline-block';
     takePhotoBtn.style.display = 'none';
 }
@@ -98,10 +120,24 @@ function retakePhoto() {
     takePhotoBtn.style.display = 'inline-block';
 }
 
+async function switchCamera() {
+    if (stream) {
+        // Detener el stream actual
+        stream.getTracks().forEach(track => track.stop());
+        
+        // Cambiar el modo de la cámara
+        currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+        
+        // Reabrir la cámara con la nueva configuración
+        await openCamera();
+    }
+}
+
 // Event listeners para la interacción del usuario
 openCameraBtn.addEventListener('click', openCamera);
 takePhotoBtn.addEventListener('click', takePhoto);
 document.getElementById('retakePhoto').addEventListener('click', retakePhoto);
+switchCameraBtn.addEventListener('click', switchCamera);
 
 // Limpiar stream cuando el usuario cierra o navega fuera de la página
 window.addEventListener('beforeunload', () => {

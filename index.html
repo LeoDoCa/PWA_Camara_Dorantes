@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Práctica Cámara PWA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#4A90E2">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -54,6 +55,42 @@
         canvas {
             display: none;
         }
+
+        #gallery {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .gallery-item {
+            flex: 0 0 auto;
+            width: 150px;
+            scroll-snap-align: start;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .gallery-item img:hover {
+            transform: scale(1.05);
+        }
+
+        #switchCamera {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+        }
     </style>
 </head>
 
@@ -64,8 +101,11 @@
         <button id="openCamera" class="btn btn-primary">Abrir Cámara</button>
 
         <div id="cameraContainer">
-            <div id="video-container">
+            <div id="video-container" class="position-relative">
                 <video id="video" autoplay playsinline></video>
+                <button id="switchCamera" class="btn btn-light btn-sm rounded-circle" style="display:none;">
+                    <i class="bi bi-camera-flip"></i>
+                </button>
             </div>
             <div id="photo-container">
                 <img id="captured-photo" alt="Foto capturada">
@@ -75,6 +115,7 @@
                 <button id="takePhoto" class="btn btn-success">Tomar Foto</button>
                 <button id="retakePhoto" class="btn btn-warning" style="display:none;">Volver a Tomar</button>
             </div>
+            <div id="gallery" class="mt-4"></div>
         </div>
     </div>
 
