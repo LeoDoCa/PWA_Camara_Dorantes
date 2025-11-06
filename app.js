@@ -14,8 +14,8 @@ async function openCamera() {
         const constraints = {
             video: {
                 facingMode: { ideal: 'environment' }, // Solicita la cámara trasera
-                width: { ideal: 320 },
-                height: { ideal: 240 }
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
             }
         };
 
@@ -43,7 +43,11 @@ function takePhoto() {
         return;
     }
 
-    // 1. Dibujar el Frame de Video en el Canvas
+    // 1. Ajustar el tamaño del canvas al tamaño real del video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // 2. Dibujar el Frame de Video en el Canvas
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
     // 2. Conversión a Data URL

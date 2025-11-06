@@ -31,12 +31,12 @@
             max-width: 640px;
         }
 
-        video,
-        canvas {
+        video {
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
-            object-fit: cover;
+            max-height: 80vh;
+            object-fit: contain;
         }
 
         #photo-container {
@@ -44,9 +44,15 @@
         }
 
         #captured-photo {
-            max-width: 100%;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        canvas {
+            display: none;
         }
     </style>
 </head>
