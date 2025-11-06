@@ -25,34 +25,28 @@
             margin-top: 1rem;
         }
 
+        #video-container,
+        #photo-container {
+            margin: 1rem auto;
+            max-width: 640px;
+        }
+
         video,
         canvas {
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            max-width: 100%;
-            height: auto;
+            width: 100%;
             object-fit: cover;
-            transform: rotate(0deg);
         }
 
-        /* Forzar que se vea horizontal */
-        @media (orientation: portrait) {
-
-            video,
-            canvas {
-                width: 100vw;
-                height: 56.25vw;
-                /* Mantener relación 16:9 */
-            }
+        #photo-container {
+            display: none;
         }
 
-        @media (orientation: landscape) {
-
-            video,
-            canvas {
-                width: 80vw;
-                height: 45vw;
-            }
+        #captured-photo {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -64,10 +58,13 @@
         <button id="openCamera" class="btn btn-primary">Abrir Cámara</button>
 
         <div id="cameraContainer">
-            <div class="video-wrapper">
+            <div id="video-container">
                 <video id="video" autoplay playsinline></video>
-                <canvas id="canvas" width="320" height="240"></canvas>
             </div>
+            <div id="photo-container">
+                <img id="captured-photo" alt="Foto capturada">
+            </div>
+            <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
             <div class="mt-3">
                 <button id="takePhoto" class="btn btn-success">Tomar Foto</button>
                 <button id="retakePhoto" class="btn btn-warning" style="display:none;">Volver a Tomar</button>
