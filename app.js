@@ -84,6 +84,12 @@ function takePhoto() {
     galleryItem.appendChild(img);
     gallery.insertBefore(galleryItem, gallery.firstChild);
     
+    // Mostrar el título de la galería si es la primera foto
+    const galleryTitle = document.getElementById('galleryTitle');
+    if (galleryTitle.style.display === 'none') {
+        galleryTitle.style.display = 'block';
+    }
+    
     // 5. Mostrar botón de volver a tomar
     document.getElementById('retakePhoto').style.display = 'inline-block';
     takePhotoBtn.style.display = 'none';
