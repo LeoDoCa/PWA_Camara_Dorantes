@@ -13,18 +13,31 @@ async function openCamera() {
     const constraints = {
       video: {
         facingMode: { ideal: 'environment' },
-        width: { ideal: 320 },
-        height: { ideal: 240 }
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
       }
     };
 
     stream = await navigator.mediaDevices.getUserMedia(constraints);
     video.srcObject = stream;
 
+    // Esperar a que el video cargue sus dimensiones reales
+    await new Promise(resolve => {
+      video.onloadedmetadata = () => {
+        video.play();
+        // Ajustar canvas al tamaño real del video
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        resolve();
+      };
+    });
+
+    // Forzar que el video se vea horizontal (aunque el móvil esté en vertical)
+    video.style.transform = 'rotate(0deg)';
     cameraContainer.style.display = 'block';
     openCameraBtn.disabled = true;
 
-    console.log('Cámara abierta');
+    console.log('Cámara abierta:', video.videoWidth, 'x', video.videoHeight);
   } catch (error) {
     console.error('Error al acceder a la cámara:', error);
     alert('No se pudo acceder a la cámara. Da permisos por favor.');
@@ -37,10 +50,24 @@ function takePhoto() {
     return;
   }
 
-  // Dibujar el frame del video en el canvas
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
 
-  // Pausar la vista previa y mostrar la foto
+  // Aseguramos que el canvas tenga las mismas proporciones
+  canvas.width = vw;
+  canvas.height = vh;
+
+  // Si la cámara está en orientación vertical, rotamos la imagen
+  if (vh > vw) {
+    ctx.save();
+    ctx.translate(vh / 2, vw / 2);
+    ctx.rotate(Math.PI / 2);
+    ctx.drawImage(video, -vw / 2, -vh / 2, vw, vh);
+    ctx.restore();
+  } else {
+    ctx.drawImage(video, 0, 0, vw, vh);
+  }
+
   video.pause();
   video.style.display = 'none';
   canvas.style.display = 'block';
